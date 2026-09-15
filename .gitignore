@@ -10,6 +10,7 @@ data/*.csv
 models/*.pkl
 models/*.joblib
 models/*.h5
+models/model_metadata.json
 
 # 4. Jupyter Checkpoints
 .ipynb_checkpoints/
