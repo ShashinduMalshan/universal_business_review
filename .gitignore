@@ -1,0 +1,22 @@
+# 1. Virtual Environment
+.venv/
+venv/
+
+# 2. Dataset Files 
+data/*.csv
+!data/.gitkeep
+
+# 3. Trained ML Models
+models/*.pkl
+models/*.joblib
+models/*.h5
+
+# 4. Jupyter Checkpoints
+.ipynb_checkpoints/
+
+# 5. Python Cache
+__pycache__/
+*.py[cod]
+
+# 6. VS Code settings
+.vscode/
