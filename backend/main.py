@@ -443,3 +443,46 @@ def predict_batch_reviews(payload: BatchPredictRequest):
     return BatchPredictResponse(summary=summary, results=results)
 
 
+@app.post("/api/upload-csv", response_model=BatchPredictResponse, tags=["CSV Batch Ingestion"])
+async def upload_csv_file(file: UploadFile = File(...)):
+    if not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Only .csv files are supported.")
+    
+    content = await file.read()
+    try:
+        df_in = pd.read_csv(io.StringIO(content.decode("utf-8", errors="ignore")))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse CSV file: {e}")
+    
+    possible_cols = ['review_text', 'Review Text', 'text', 'review', 'content', 'comment', 'feedback', 'Body']
+    text_col = next((c for c in possible_cols if c in df_in.columns), None)
+    
+    if text_col is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not find a review text column. Found columns: {list(df_in.columns)}. Expected one of: {possible_cols}"
+        )
+        
+    reviews_list = df_in[text_col].dropna().astype(str).tolist()
+    return predict_batch_reviews(BatchPredictRequest(reviews=reviews_list))
+
+
+# ======================================================================================
+# 6. STATIC FRONTEND MOUNTING
+# ======================================================================================
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+    @app.get("/", tags=["Frontend"])
+    def serve_frontend_index():
+        index_file = os.path.join(FRONTEND_DIR, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return {"message": "Frontend index.html not found. Place it in the frontend directory."}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    print("[INFO] Launching Universal Business Review Analyzer on http://127.0.0.1:8000 ...")
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+
