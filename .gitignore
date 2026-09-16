@@ -2,15 +2,17 @@
 .venv/
 venv/
 
-# 2. Dataset Files 
+# 2. Dataset Files (Ignore large 100k raw dataset, keep sample test CSV)
 data/*.csv
+!data/sample_test_reviews.csv
 !data/.gitkeep
 
-# 3. Trained ML Models
+# 3. Trained ML Models (Keep lightweight 187KB production bundle)
 models/*.pkl
-models/*.joblib
 models/*.h5
-models/model_metadata.json
+!models/business_sentiment_pipeline.joblib
+!models/model_metadata.json
+
 
 # 4. Jupyter Checkpoints
 .ipynb_checkpoints/

@@ -1,0 +1,37 @@
+{
+    "model_name": "Logistic Regression",
+    "num_classes": 3,
+    "classes": [
+        "Negative",
+        "Neutral",
+        "Positive"
+    ],
+    "metrics": [
+        {
+            "Model": "Logistic Regression",
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
+        },
+        {
+            "Model": "Linear Support Vector (LinearSVC)",
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
+        },
+        {
+            "Model": "Random Forest Classifier",
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
+        }
+    ],
+    "num_features": 2792,
+    "sample_count": 30000
+}
