@@ -101,11 +101,12 @@ def clean_text(text: str) -> str:
     return text
 
 
-def compute_lexicon_polarity(text: str, pos_words: set, neg_words: set) -> float:
-    """Technique 4: Lexicon polarity index with negation handling"""
+def compute_lexicon_features(text: str, pos_words: set, neg_words: set):
+    """Technique 4: Lexicon polarity index and sentiment density with negation handling"""
     words = clean_text(text).split()
+    total_words = len(words) + 1e-5
     if not words:
-        return 0.0
+        return 0.0, 0.0, 0.0
     pos_score = 0.0
     neg_score = 0.0
     
@@ -135,9 +136,10 @@ def compute_lexicon_polarity(text: str, pos_words: set, neg_words: set) -> float
                 neg_score += 1.0
                 
     total = pos_score + neg_score
-    if total == 0:
-        return 0.0
-    return (pos_score - neg_score) / (total + 1.0)
+    polarity = (pos_score - neg_score) / (total + 1.0) if total > 0 else 0.0
+    pos_density = pos_score / total_words
+    neg_density = neg_score / total_words
+    return polarity, pos_density, neg_density
 
 
 def extract_features(text: str, bundle: dict):
@@ -153,14 +155,14 @@ def extract_features(text: str, bundle: dict):
     excl_c = str(text).count('!')
     upper_r = sum(1 for c in str(text) if c.isupper()) / (len(str(text)) + 1e-5)
     
-    # Lexicon polarity
+    # Lexicon polarity & density
     pos_words = set(bundle.get("positive_lexicon", []))
     neg_words = set(bundle.get("negative_lexicon", []))
-    polarity = compute_lexicon_polarity(cleaned, pos_words, neg_words)
+    polarity, pos_density, neg_density = compute_lexicon_features(text, pos_words, neg_words)
     
-    # Scale numerical features
+    # Scale numerical features: ['avg_word_len', 'exclamation_count', 'uppercase_ratio', 'lexicon_polarity', 'pos_word_density', 'neg_word_density']
     num_cols = bundle["numeric_features"]
-    num_df = pd.DataFrame([[char_c, word_c, avg_w, excl_c, upper_r, polarity]], columns=num_cols)
+    num_df = pd.DataFrame([[avg_w, excl_c, upper_r, polarity, pos_density, neg_density]], columns=num_cols)
     num_scaled = bundle["scaler"].transform(num_df)
     
     # TF-IDF N-grams
