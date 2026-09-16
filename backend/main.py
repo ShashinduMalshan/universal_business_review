@@ -148,3 +148,35 @@ def extract_features(text: str, bundle: dict):
     return fused_matrix, meta_dict
 
 
+ASPECT_TAXONOMY = {
+    "Quality & Craftsmanship": ["fabric", "material", "stitching", "build", "durability", "casing", "hardware", "screen", "finish", "craftsmanship", "food", "dish", "meal", "pasta", "steak", "pizza", "burger", "coffee", "truffle", "leather"],
+    "Service & Staff": ["waiter", "staff", "manager", "server", "service", "technician", "customer service", "support", "attendant", "crew", "host", "chef", "contractor", "team"],
+    "Speed & Punctuality": ["fast", "slow", "delay", "waited", "hours", "punctual", "late", "prompt", "quick", "speed", "long time", "took too long", "arrival", "turnaround"],
+    "Pricing & Value": ["price", "cost", "overpriced", "expensive", "cheap", "worth", "value", "refund", "fee", "bill", "quote", "invoice", "money"],
+    "Cleanliness & Environment": ["clean", "dirty", "sticky", "smell", "spotless", "atmosphere", "noise", "hygiene", "tables", "room", "ambiance", "cozy", "unhygienic"],
+    "Performance & Reliability": ["battery", "bluetooth", "wifi", "charging", "processor", "crash", "overheat", "disconnects", "laggy", "sound", "display", "speed", "device"]
+}
+
+CRITICAL_TRIGGERS = ["food poisoning", "scam", "fraud", "illegal", "threatened", "blisters", "injury", "dangerous", "unhygienic", "terrible hygiene", "damaged my property", "broke immediately"]
+
+
+def detect_aspects(text: str) -> List[str]:
+    text_lower = text.lower()
+    matched = []
+    for aspect, kws in ASPECT_TAXONOMY.items():
+        if any(kw in text_lower for kw in kws):
+            matched.append(aspect)
+    return matched if matched else ["General Experience"]
+
+
+def evaluate_urgency(text: str, sentiment: str) -> str:
+    text_lower = text.lower()
+    if any(trig in text_lower for trig in CRITICAL_TRIGGERS):
+        return "Critical"
+    if sentiment == "Negative":
+        return "High" if "!" in text or len(text) > 120 else "Medium"
+    if sentiment == "Neutral":
+        return "Low"
+    return "None"
+
+
