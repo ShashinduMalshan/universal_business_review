@@ -258,3 +258,188 @@ class BatchPredictResponse(BaseModel):
 # ======================================================================================
 # 5. REST API ENDPOINTS
 # ======================================================================================
+@app.get("/api/health", tags=["Health"])
+def health_check():
+    if pipeline_bundle is None:
+        raise HTTPException(status_code=503, detail="Model pipeline is not loaded.")
+    return {
+        "status": "healthy",
+        "model_name": pipeline_bundle.get("best_model_name", "Logistic Regression"),
+        "classes": pipeline_bundle.get("class_mapping", {0: "Negative", 1: "Neutral", 2: "Positive"})
+    }
+
+
+@app.get("/api/model-info", tags=["Metadata"])
+def get_model_info():
+    if model_metadata is None:
+        raise HTTPException(status_code=404, detail="Model metadata not found.")
+    return model_metadata
+
+
+@app.get("/api/sample-reviews", tags=["Samples"])
+def get_sample_reviews():
+    return [
+        {
+            "domain": "Hospitality & Food",
+            "category": "Hospitality",
+            "text": "Consistently the top spot in town for truffle pasta. Spotless cleanliness and exceptional staff!",
+            "expected": "Positive"
+        },
+        {
+            "domain": "Hospitality & Food",
+            "category": "Hospitality",
+            "text": "Horrible dining experience with the burger. The freezing cold food is unacceptable. Left hungry and frustrated.",
+            "expected": "Negative"
+        },
+        {
+            "domain": "Retail & Apparel",
+            "category": "Retail",
+            "text": "The wool cardigan is soft, elegant, and fits like a dream. Top notch craftsmanship and premium texture.",
+            "expected": "Positive"
+        },
+        {
+            "domain": "Retail & Apparel",
+            "category": "Retail",
+            "text": "Cheap fabric, buttons fell off immediately, and the zipper is completely jammed. Terrible quality.",
+            "expected": "Negative"
+        },
+        {
+            "domain": "Consumer Tech & Electronics",
+            "category": "Tech",
+            "text": "Best tech purchase of the year! Incredible battery life, crystal clear display, and blazing fast processor.",
+            "expected": "Positive"
+        },
+        {
+            "domain": "Consumer Tech & Electronics",
+            "category": "Tech",
+            "text": "Do not buy this! Constant hardware failure and Bluetooth disconnects. Died after two weeks.",
+            "expected": "Negative"
+        },
+        {
+            "domain": "General Neutral",
+            "category": "Neutral",
+            "text": "An ordinary experience regarding the product. It features acceptable quality and routine service.",
+            "expected": "Neutral"
+        }
+    ]
+
+
+@app.post("/api/predict", response_model=PredictResponse, tags=["Inference"])
+def predict_single_review(payload: PredictRequest):
+    if pipeline_bundle is None:
+        raise HTTPException(status_code=503, detail="Model pipeline is not initialized.")
+    
+    raw_text = payload.review_text
+    if not raw_text or not raw_text.strip():
+        raise HTTPException(status_code=400, detail="Review text cannot be empty. Send JSON with 'review_text' or 'text'.")
+    
+    clf = pipeline_bundle["model"]
+    class_map = pipeline_bundle.get("class_mapping", {0: "Negative", 1: "Neutral", 2: "Positive"})
+    
+    # 1. Feature Engineering
+    fused_matrix, meta_dict = extract_features(raw_text, pipeline_bundle)
+    
+    # 2. Predict class & probabilities
+    pred_code = int(clf.predict(fused_matrix)[0])
+    sentiment_label = class_map.get(pred_code, "Unknown")
+    
+    if hasattr(clf, "predict_proba"):
+        probs_array = clf.predict_proba(fused_matrix)[0]
+        prob_dict = {class_map.get(i, f"Class {i}"): round(float(p), 4) for i, p in enumerate(probs_array)}
+        confidence = float(probs_array[pred_code])
+    elif hasattr(clf, "decision_function"):
+        scores = clf.decision_function(fused_matrix)[0]
+        exp_scores = np.exp(scores - np.max(scores))
+        softmax_probs = exp_scores / np.sum(exp_scores)
+        prob_dict = {class_map.get(i, f"Class {i}"): round(float(p), 4) for i, p in enumerate(softmax_probs)}
+        confidence = float(softmax_probs[pred_code])
+    else:
+        confidence = 1.0
+        prob_dict = {sentiment_label: 1.0}
+        
+    aspects = detect_aspects(raw_text)
+    urgency = evaluate_urgency(raw_text, sentiment_label)
+    smart_reply = generate_smart_reply(sentiment_label, aspects, payload.domain)
+    
+    return PredictResponse(
+        review_text=raw_text,
+        sentiment=sentiment_label,
+        sentiment_code=pred_code,
+        confidence=round(confidence, 4),
+        probabilities=prob_dict,
+        aspects=aspects,
+        urgency_level=urgency,
+        smart_reply=smart_reply,
+        engineered_features=meta_dict
+    )
+
+
+@app.post("/api/predict-batch", response_model=BatchPredictResponse, tags=["Inference"])
+def predict_batch_reviews(payload: BatchPredictRequest):
+    if pipeline_bundle is None:
+        raise HTTPException(status_code=503, detail="Model pipeline is not initialized.")
+    
+    if not payload.reviews:
+        raise HTTPException(status_code=400, detail="Reviews list cannot be empty.")
+    
+    results = []
+    aspect_counts = {}
+    pos_count = 0
+    neu_count = 0
+    neg_count = 0
+    critical_count = 0
+    total_conf = 0.0
+    
+    for item in payload.reviews:
+        if isinstance(item, str):
+            rev_str = item.strip()
+            domain_val = payload.domain
+        elif isinstance(item, PredictRequest):
+            rev_str = (item.review_text or "").strip()
+            domain_val = item.domain or payload.domain
+        elif isinstance(item, dict):
+            rev_str = (item.get("review_text") or item.get("text") or item.get("review") or "").strip()
+            domain_val = item.get("domain", payload.domain)
+        else:
+            continue
+
+        if not rev_str:
+            continue
+
+        pred_item = predict_single_review(PredictRequest(review_text=rev_str, domain=domain_val))
+        results.append(pred_item)
+        
+        if pred_item.sentiment == "Positive":
+            pos_count += 1
+        elif pred_item.sentiment == "Neutral":
+            neu_count += 1
+        else:
+            neg_count += 1
+            
+        if pred_item.urgency_level == "Critical":
+            critical_count += 1
+            
+        total_conf += pred_item.confidence
+        for asp in pred_item.aspects:
+            aspect_counts[asp] = aspect_counts.get(asp, 0) + 1
+            
+    total_valid = len(results)
+    if total_valid == 0:
+        raise HTTPException(status_code=400, detail="No valid non-empty reviews provided.")
+        
+    summary = BatchSummary(
+        total_reviews=total_valid,
+        positive_count=pos_count,
+        neutral_count=neu_count,
+        negative_count=neg_count,
+        positive_percentage=round((pos_count / total_valid) * 100, 2),
+        neutral_percentage=round((neu_count / total_valid) * 100, 2),
+        negative_percentage=round((neg_count / total_valid) * 100, 2),
+        average_confidence=round((total_conf / total_valid) * 100, 2),
+        critical_alerts_count=critical_count,
+        top_aspects=aspect_counts
+    )
+    
+    return BatchPredictResponse(summary=summary, results=results)
+
+
