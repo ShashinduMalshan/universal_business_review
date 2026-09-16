@@ -200,3 +200,61 @@ def generate_smart_reply(sentiment: str, aspects: List[str], domain: Optional[st
         )
 
 
+# ======================================================================================
+# 4. PYDANTIC SCHEMAS
+# ======================================================================================
+class PredictRequest(BaseModel):
+    review_text: Optional[str] = None
+    text: Optional[str] = None
+    review: Optional[str] = None
+    content: Optional[str] = None
+    domain: Optional[str] = "General"
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_text_field(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            text_val = data.get("review_text") or data.get("text") or data.get("review") or data.get("content")
+            if text_val:
+                data["review_text"] = str(text_val)
+        return data
+
+
+class PredictResponse(BaseModel):
+    review_text: str
+    sentiment: str
+    sentiment_code: int
+    confidence: float
+    probabilities: Dict[str, float]
+    aspects: List[str]
+    urgency_level: str
+    smart_reply: str
+    engineered_features: Dict[str, Any]
+
+
+class BatchPredictRequest(BaseModel):
+    reviews: List[Union[str, PredictRequest]]
+    domain: Optional[str] = "General"
+
+
+class BatchSummary(BaseModel):
+    total_reviews: int
+    positive_count: int
+    neutral_count: int
+    negative_count: int
+    positive_percentage: float
+    neutral_percentage: float
+    negative_percentage: float
+    average_confidence: float
+    critical_alerts_count: int
+    top_aspects: Dict[str, int]
+
+
+class BatchPredictResponse(BaseModel):
+    summary: BatchSummary
+    results: List[PredictResponse]
+
+
+# ======================================================================================
+# 5. REST API ENDPOINTS
+# ======================================================================================
