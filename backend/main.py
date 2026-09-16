@@ -83,9 +83,9 @@ def load_model_pipeline():
         print(f"[ERROR] Failed to load model pipeline: {e}")
 
 
-# ======================================================================================
-# 3. DOMAIN-AGNOSTIC NLP & FEATURE ENGINEERING FUNCTIONS
-# ======================================================================================
+NEGATION_TOKENS = set(["not", "no", "never", "n't", "hardly", "barely", "scarcely", "without", "lack", "lacked", "lacks", "neither", "nor"])
+
+
 def clean_text(text: str) -> str:
     """Technique 1: Text cleaning & normalization"""
     if not isinstance(text, str):
@@ -93,19 +93,51 @@ def clean_text(text: str) -> str:
     text = text.lower()
     text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
     text = re.sub(r'<.*?>', '', text)
-    text = re.sub(r"[^a-zA-Z\s!?'\.]", '', text)
+    text = re.sub(r"won't", "will not", text)
+    text = re.sub(r"can't", "can not", text)
+    text = re.sub(r"n't", " not", text)
+    text = re.sub(r"[^a-zA-Z\s!?'\.]", ' ', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 
 def compute_lexicon_polarity(text: str, pos_words: set, neg_words: set) -> float:
-    """Technique 4: Lexicon polarity index"""
-    words = text.lower().split()
+    """Technique 4: Lexicon polarity index with negation handling"""
+    words = clean_text(text).split()
     if not words:
         return 0.0
-    pos = sum(1 for w in words if w in pos_words)
-    neg = sum(1 for w in words if w in neg_words)
-    return (pos - neg) / (pos + neg + 1.0)
+    pos_score = 0.0
+    neg_score = 0.0
+    
+    negated = False
+    negation_window = 0
+    
+    for w in words:
+        if w in NEGATION_TOKENS:
+            negated = True
+            negation_window = 3
+            continue
+            
+        if negation_window > 0:
+            negation_window -= 1
+            if negation_window == 0:
+                negated = False
+                
+        if w in pos_words:
+            if negated:
+                neg_score += 1.3
+            else:
+                pos_score += 1.0
+        elif w in neg_words:
+            if negated:
+                pos_score += 0.4
+            else:
+                neg_score += 1.0
+                
+    total = pos_score + neg_score
+    if total == 0:
+        return 0.0
+    return (pos_score - neg_score) / (total + 1.0)
 
 
 def extract_features(text: str, bundle: dict):

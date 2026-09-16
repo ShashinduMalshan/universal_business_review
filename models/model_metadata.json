@@ -15,6 +15,6 @@
             "F1-Score": 1.0
         }
     ],
-    "num_features": 2724,
+    "num_features": 30006,
     "sample_count": 100000
 }
