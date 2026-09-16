@@ -1,5 +1,5 @@
 {
-    "model_name": "Random Forest Classifier",
+    "model_name": "Logistic Regression",
     "num_classes": 3,
     "classes": [
         "Negative",
@@ -8,30 +8,13 @@
     ],
     "metrics": [
         {
-            "Model": "Random Forest Classifier",
-            "Accuracy": 0.7478,
-            "Precision": 0.7477017628503186,
-            "Recall": 0.7478,
-            "F1-Score": 0.7477503652872222,
-            "5-Fold CV F1": 0.7493723125676952
-        },
-        {
             "Model": "Logistic Regression",
-            "Accuracy": 0.7476,
-            "Precision": 0.7475960675883256,
-            "Recall": 0.7476,
-            "F1-Score": 0.7475966076376155,
-            "5-Fold CV F1": 0.7511016693023397
-        },
-        {
-            "Model": "Linear Support Vector (LinearSVC)",
-            "Accuracy": 0.7472,
-            "Precision": 0.7471877665785754,
-            "Recall": 0.7472,
-            "F1-Score": 0.7471810682883461,
-            "5-Fold CV F1": 0.7510763454027493
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0
         }
     ],
-    "num_features": 4254,
-    "sample_count": 25000
+    "num_features": 2724,
+    "sample_count": 100000
 }
