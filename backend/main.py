@@ -180,3 +180,23 @@ def evaluate_urgency(text: str, sentiment: str) -> str:
     return "None"
 
 
+def generate_smart_reply(sentiment: str, aspects: List[str], domain: Optional[str] = None) -> str:
+    aspect_str = ", ".join(aspects)
+    if sentiment == "Positive":
+        return (
+            f"Thank you so much for your wonderful feedback! We are thrilled to hear you enjoyed our {aspect_str.lower()}. "
+            f"We look forward to welcoming you again soon!"
+        )
+    elif sentiment == "Neutral":
+        return (
+            f"Thank you for sharing your feedback with us. We appreciate your honest review regarding our {aspect_str.lower()} "
+            f"and our team is actively working to enhance this experience. Please let us know if there is anything we can do better next time."
+        )
+    else:
+        return (
+            f"We sincerely apologize for your disappointing experience with our {aspect_str.lower()}. "
+            f"This does not meet our standard of service. Please contact our management team directly at support@business.com "
+            f"so we can resolve this matter for you immediately."
+        )
+
+
