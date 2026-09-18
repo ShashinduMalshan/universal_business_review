@@ -1,5 +1,13 @@
 # OmniReview AI - Universal Business Review & Sentiment Intelligence Platform
 
+### 🛡️ Developed by Team **CRUSADERS**
+
+| Student ID | Student Name |
+| :---: | :--- |
+| **241711080** | **Shasidu Malshan** |
+| **241711014** | **Binu Jinajith** |
+| **241711109** | **Sandaru Anuththra** |
+
 An enterprise-grade, multi-domain Machine Learning and Full-Stack Web Application for real-time customer feedback sentiment classification, fine-grained aspect polarity scoring, emotion intelligence, automated ticket routing, and executive CSAT/NPS analytics.
 
 ---
@@ -261,6 +269,18 @@ The interactive notebook [`Universal_Business_Review_Analyzer.ipynb`](./Universa
 - **Figure 8**: Multi-Model Performance Comparison (Accuracy vs Macro F1).
 - **Figure 9**: Normalized $3 \times 3$ Confusion Matrix.
 - **Figure 10A & 10B**: Multi-Class One-vs-Rest ROC & Precision-Recall Curves.
+
+---
+
+## 👥 Project Team & Contributors
+
+### 🛡️ Team: **CRUSADERS**
+
+| Student ID | Student Name | Role / Focus Areas |
+| :---: | :--- | :--- |
+| **241711080** | **Shasidu Malshan** | Machine Learning, NLP Feature Engineering & Full-Stack Architecture |
+| **241711014** | **Binu Jinajith** | Frontend Cyber-Glass UI/UX, Chart.js Visualizations & Analytics |
+| **241711109** | **Sandaru Anuththra** | Aspect & Emotion Analytics, Quality Assurance & Test Suites |
 
 ---
 
