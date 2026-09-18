@@ -7,6 +7,7 @@
 | **241711080** | **Shasidu Malshan** | Machine Learning Core, NLP Pipelines & Full-Stack System Architecture |
 | **241711014** | **Binu Jinajith** | Frontend Cyber-Glass UI/UX, Chart.js Telemetry & Analytics |
 | **241711109** | **Sandaru Anuththra** | Aspect & Emotion Analytics, Quality Assurance & Test Suites |
+| **241711104** | **Vinod Niloshana** | Operational Ticket Routing, Data Modeling & System Evaluation |
 
 ---
 
@@ -371,6 +372,7 @@ uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 | **241711080** | **Shasidu Malshan** | Machine Learning Core, NLP Feature Engineering & Full-Stack System Architecture |
 | **241711014** | **Binu Jinajith** | Frontend Cyber-Glass UI/UX, Chart.js Telemetry & Analytics |
 | **241711109** | **Sandaru Anuththra** | Aspect & Emotion Analytics, Quality Assurance & Test Suites |
+| **241711104** | **Vinod Niloshana** | Operational Ticket Routing, Data Modeling & System Evaluation |
 
 ---
 
