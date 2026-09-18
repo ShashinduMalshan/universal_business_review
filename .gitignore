@@ -17,9 +17,17 @@ models/*.h5
 # 4. Jupyter Checkpoints
 .ipynb_checkpoints/
 
-# 5. Python Cache
+# 5. Python & Testing Cache
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
 
-# 6. VS Code settings
+# 6. Database Files
+*.db
+*.sqlite3
+
+# 7. VS Code & IDE settings
 .vscode/
+.idea/

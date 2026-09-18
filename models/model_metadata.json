@@ -12,9 +12,26 @@
             "Accuracy": 1.0,
             "Precision": 1.0,
             "Recall": 1.0,
-            "F1-Score": 1.0
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
+        },
+        {
+            "Model": "Linear Support Vector (LinearSVC)",
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
+        },
+        {
+            "Model": "Random Forest Classifier",
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "5-Fold CV F1": 1.0
         }
     ],
-    "num_features": 30006,
-    "sample_count": 100000
+    "num_features": 1553,
+    "sample_count": 30000
 }

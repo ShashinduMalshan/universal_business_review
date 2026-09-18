@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OmniReview AI | Universal Business Review & Sentiment Platform</title>
+  <title>OmniReview AI | Enterprise Sentiment Intelligence & Dispatch</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,42 +31,46 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <!-- Custom CSS -->
+  <!-- Custom Modern Cyber-Glass CSS -->
   <link rel="stylesheet" href="/static/style.css" />
 </head>
-<body class="min-h-screen bg-[#0b0f19] text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+<body class="min-h-screen text-slate-100 antialiased selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
 
   <!-- TOP NAVIGATION BAR -->
-  <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/75 backdrop-blur-2xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         
         <!-- Brand Logo -->
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <i class="fa-solid fa-chart-line text-white text-lg"></i>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 ring-1 ring-white/20">
+            <i class="fa-solid fa-chart-line text-white text-base"></i>
           </div>
           <div>
-            <span class="text-xl font-extrabold tracking-tight">
-              OmniReview <span class="gradient-text">AI</span>
-            </span>
-            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              Universal 3-Class ML
-            </span>
+            <div class="flex items-center space-x-2">
+              <span class="text-xl font-extrabold tracking-tight">
+                OmniReview <span class="gradient-text">AI</span>
+              </span>
+              <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+                Enterprise v2.0
+              </span>
+            </div>
           </div>
         </div>
 
-        <!-- System Status & Docs Link -->
-        <div class="flex items-center space-x-4">
-          <div id="statusBadge" class="flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-emerald-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span id="statusText">API Connected</span>
+        <!-- System Telemetry & Links -->
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          
+          <div class="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-medium text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 pulse-dot"></span>
+            <span class="font-mono text-[11px] text-slate-400">100K Balanced ML</span>
           </div>
 
-          <a href="/docs" target="_blank" class="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition">
-            <i class="fa-solid fa-code text-indigo-400"></i>
-            <span>Swagger API</span>
-          </a>
+          <div id="statusBadge" class="flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900/90 border border-emerald-500/30 text-xs font-medium text-emerald-400 shadow-sm shadow-emerald-500/10">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="statusText">System Healthy</span>
+          </div>
+
         </div>
 
       </div>
@@ -74,420 +78,417 @@
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
 
     <!-- HERO INTRO -->
-    <div class="mb-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-800/60">
       <div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Universal Business <span class="gradient-text-cyan">Review Intelligence</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          Universal <span class="gradient-text-cyan">Sentiment Intelligence</span> & Dispatch
         </h1>
-        <p class="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl">
-          Multi-domain NLP sentiment classification, aspect breakdown, urgency scoring, and automated AI responses powered by Machine Learning.
+        <p class="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+          Production-grade multi-domain sentiment analysis, fine-grained aspect polarity decomposition, tone classification, and automated operational ticket dispatch.
         </p>
       </div>
 
-      <!-- Domain Badges -->
-      <div class="flex flex-wrap gap-2 justify-center sm:justify-end">
-        <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800/80 border border-slate-700 text-slate-300"><i class="fa-solid fa-utensils text-amber-400 mr-1.5"></i>Hospitality</span>
-        <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800/80 border border-slate-700 text-slate-300"><i class="fa-solid fa-shirt text-pink-400 mr-1.5"></i>Retail</span>
-        <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800/80 border border-slate-700 text-slate-300"><i class="fa-solid fa-laptop text-cyan-400 mr-1.5"></i>Tech</span>
-        <span class="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800/80 border border-slate-700 text-slate-300"><i class="fa-solid fa-wrench text-indigo-400 mr-1.5"></i>Services</span>
+      <!-- Domain Chips -->
+      <div class="flex flex-wrap gap-2 md:justify-end">
+        <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900/80 border border-slate-800 text-slate-300 flex items-center shadow-sm">
+          <i class="fa-solid fa-utensils text-amber-400 mr-1.5"></i>Hospitality
+        </span>
+        <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900/80 border border-slate-800 text-slate-300 flex items-center shadow-sm">
+          <i class="fa-solid fa-bag-shopping text-pink-400 mr-1.5"></i>Retail
+        </span>
+        <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900/80 border border-slate-800 text-slate-300 flex items-center shadow-sm">
+          <i class="fa-solid fa-microchip text-cyan-400 mr-1.5"></i>Consumer Tech
+        </span>
+        <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900/80 border border-slate-800 text-slate-300 flex items-center shadow-sm">
+          <i class="fa-solid fa-handshake text-indigo-400 mr-1.5"></i>Services
+        </span>
       </div>
     </div>
 
-    <!-- NAVIGATION TABS -->
-    <div class="flex border-b border-slate-800 space-x-2 sm:space-x-8 mb-8 overflow-x-auto">
-      <button onclick="switchTab('tab-live')" id="btn-tab-live" class="tab-btn active pb-4 text-sm font-semibold border-b-2 border-indigo-500 text-indigo-400 flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-bolt"></i>
-        <span>Live Review Analyzer</span>
+    <!-- MODERN SEGMENTED TABS -->
+    <div class="p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 flex space-x-1 sm:space-x-2 mb-8 overflow-x-auto shadow-inner">
+      <button id="tabSingle" onclick="switchTab('single')" class="flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-500/20 flex items-center justify-center space-x-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+        <span>Single Review Studio</span>
       </button>
-      <button onclick="switchTab('tab-batch')" id="btn-tab-batch" class="tab-btn pb-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
+
+      <button id="tabBatch" onclick="switchTab('batch')" class="flex-1 py-2.5 px-4 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 flex items-center justify-center space-x-2 transition whitespace-nowrap">
         <i class="fa-solid fa-file-csv"></i>
-        <span>Bulk CSV & Batch Analytics</span>
+        <span>Batch Studio & Import</span>
       </button>
-      <button onclick="switchTab('tab-model')" id="btn-tab-model" class="tab-btn pb-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
-        <i class="fa-solid fa-brain"></i>
-        <span>Model & Feature Specs</span>
+
+      <button id="tabAnalytics" onclick="switchTab('analytics')" class="flex-1 py-2.5 px-4 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 flex items-center justify-center space-x-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Executive CSAT / NPS</span>
+      </button>
+
+      <button id="tabHistory" onclick="switchTab('history')" class="flex-1 py-2.5 px-4 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 flex items-center justify-center space-x-2 transition whitespace-nowrap">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Audit History Log</span>
       </button>
     </div>
 
-    <!-- TAB 1: LIVE REVIEW ANALYZER -->
-    <div id="tab-live" class="tab-content grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      <!-- Input Column (5 cols) -->
-      <div class="lg:col-span-5 space-y-6">
-        <div class="glass-panel rounded-2xl p-6 shadow-xl relative overflow-hidden">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-white flex items-center">
-              <i class="fa-solid fa-pen-to-square text-indigo-400 mr-2"></i> Enter Review Text
-            </h2>
-            <button onclick="clearInput()" class="text-xs text-slate-400 hover:text-rose-400 transition">
-              <i class="fa-solid fa-trash-can mr-1"></i> Clear
-            </button>
-          </div>
-
-          <!-- Quick Samples -->
-          <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">1-Click Test Samples:</label>
-            <div class="flex flex-wrap gap-1.5" id="samplePills">
-              <!-- Dynamically populated sample buttons -->
-            </div>
-          </div>
-
-          <!-- Textarea Input -->
-          <div class="relative">
-            <textarea id="reviewInput" rows="5" placeholder="Paste any customer review from Google, Yelp, Amazon, or Shopify..." class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"></textarea>
-          </div>
-
-          <!-- Domain Selector & Action Button -->
-          <div class="mt-4 flex flex-col sm:flex-row items-center gap-3">
-            <div class="w-full sm:w-1/2">
-              <select id="domainSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                <option value="General">Domain: Auto Detect</option>
-                <option value="Hospitality & Food">Hospitality & Dining</option>
-                <option value="Retail & Apparel">Retail & Fashion</option>
-                <option value="Consumer Tech & Electronics">Consumer Tech</option>
-                <option value="Services & Professional">Services & Contractors</option>
-              </select>
-            </div>
-            <button onclick="analyzeReview()" id="analyzeBtn" class="w-full sm:w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center space-x-2 transition transform active:scale-95">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
-              <span>Analyze Review</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Output Results Column (7 cols) -->
-      <div class="lg:col-span-7 space-y-6">
+    <!-- TAB 1: SINGLE REVIEW STUDIO -->
+    <section id="viewSingle" class="space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Empty Placeholder State -->
-        <div id="emptyResult" class="glass-panel rounded-2xl p-12 text-center border-dashed border-slate-800">
-          <div class="w-16 h-16 mx-auto rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-2xl mb-4">
-            <i class="fa-solid fa-magnifying-glass-chart"></i>
+        <!-- INPUT COLUMN -->
+        <div class="lg:col-span-6 space-y-4">
+          <div class="p-6 rounded-3xl glass-panel shadow-2xl space-y-5">
+            
+            <div class="flex items-center justify-between">
+              <label for="reviewInput" class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                <i class="fa-solid fa-pen-nib text-indigo-400"></i>
+                <span>Customer Review Input</span>
+              </label>
+              <div class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-indigo-400" id="charCounter">
+                0 chars | 0 words
+              </div>
+            </div>
+
+            <textarea id="reviewInput" rows="6" class="w-full bg-slate-950/80 border border-slate-800/90 rounded-2xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition leading-relaxed" placeholder="Type or paste any multi-clause customer review here..."></textarea>
+
+            <!-- Quick Preset Chips -->
+            <div class="space-y-2">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Instant Demo Presets:</span>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="loadSample('pos')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/80 text-emerald-300 transition shadow-sm flex items-center">
+                  <i class="fa-solid fa-star text-emerald-400 mr-1.5"></i> 5-Star Hospitality
+                </button>
+                <button onclick="loadSample('neu')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-950/50 hover:bg-amber-900/60 border border-amber-800/80 text-amber-300 transition shadow-sm flex items-center">
+                  <i class="fa-solid fa-scale-balanced text-amber-400 mr-1.5"></i> Neutral Experience
+                </button>
+                <button onclick="loadSample('neg')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-950/50 hover:bg-rose-900/60 border border-rose-800/80 text-rose-300 transition shadow-sm flex items-center">
+                  <i class="fa-solid fa-circle-exclamation text-rose-400 mr-1.5"></i> Slow Service Complaint
+                </button>
+                <button onclick="loadSample('crit')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-red-950/80 hover:bg-red-900 border border-red-600 text-red-300 transition shadow-md shadow-red-900/20 flex items-center">
+                  <i class="fa-solid fa-triangle-exclamation text-red-400 mr-1.5 animate-pulse"></i> Critical Hygiene P1
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Trigger Buttons -->
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800/60">
+              <button onclick="clearSingleInput()" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 text-xs font-semibold border border-slate-700 transition">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+              </button>
+              <button id="analyzeBtn" onclick="analyzeSingleReview()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 transition transform hover:-translate-y-0.5 flex items-center space-x-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Analyze Sentiment</span>
+              </button>
+            </div>
+
           </div>
-          <h3 class="text-base font-bold text-slate-200">Awaiting Input Review</h3>
-          <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-            Select a quick test sample or paste a custom review and click "Analyze Review" to inspect real-time predictions.
-          </p>
         </div>
 
-        <!-- Result Card (Hidden Initially) -->
-        <div id="resultCard" class="hidden space-y-6">
+        <!-- RESULTS COLUMN -->
+        <div class="lg:col-span-6 space-y-4">
           
-          <!-- Top Classification Banner -->
-          <div class="glass-panel rounded-2xl p-6 border-l-4" id="bannerBorder">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <!-- Empty State Placeholder -->
+          <div id="resultPlaceholder" class="h-full min-h-[420px] p-8 rounded-3xl glass-panel border-dashed border-slate-800 flex flex-col items-center justify-center text-center text-slate-500 space-y-3">
+            <div class="w-16 h-16 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-center text-2xl text-slate-600 shadow-inner">
+              <i class="fa-solid fa-brain animate-pulse text-indigo-400"></i>
+            </div>
+            <div>
+              <p class="text-base font-bold text-slate-300">Ready for Sentiment Analysis</p>
+              <p class="text-xs text-slate-500 mt-1 max-w-sm">Enter review text or select a preset on the left, then click <strong>Analyze Sentiment</strong> to generate predictions.</p>
+            </div>
+          </div>
+
+          <!-- Active Result Card -->
+          <div id="resultCard" class="hidden space-y-4">
+            
+            <!-- Primary Sentiment Banner -->
+            <div id="sentimentBanner" class="p-6 rounded-3xl border shadow-2xl flex items-center justify-between relative overflow-hidden">
+              <div class="relative z-10">
+                <div class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Classified Sentiment</div>
+                <div class="flex items-center space-x-3 mt-1">
+                  <span id="sentimentLabel" class="text-3xl font-extrabold tracking-tight text-white">Positive</span>
+                  <span id="confidenceBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-950/80 border shadow-inner">100.0% Confidence</span>
+                </div>
+              </div>
+              <div id="sentimentIconContainer" class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-xl ring-1 ring-white/10 relative z-10">
+                <i id="sentimentIcon" class="fa-solid fa-face-smile"></i>
+              </div>
+            </div>
+
+            <!-- Softmax Probability Distribution -->
+            <div class="p-5 rounded-3xl glass-panel space-y-3">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span class="flex items-center"><i class="fa-solid fa-chart-simple text-indigo-400 mr-1.5"></i> 3-Class Probability Distribution</span>
+                <span class="text-[11px] font-mono text-indigo-400">Calibrated Softmax</span>
+              </div>
               
-              <!-- Sentiment Badge & Urgency -->
-              <div>
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Predicted Sentiment</span>
-                <div class="flex items-center space-x-3">
-                  <span id="sentimentBadge" class="px-4 py-1.5 rounded-xl text-sm font-extrabold flex items-center space-x-2">
-                    <!-- Dynamic sentiment badge -->
-                  </span>
-                  <span id="urgencyBadge" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">
-                    <!-- Dynamic Urgency -->
-                  </span>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1 text-emerald-400">
+                    <span>Positive Probability</span>
+                    <span id="probPosText" class="font-mono">0.0%</span>
+                  </div>
+                  <div class="h-2.5 rounded-full bg-slate-950 border border-slate-800/80 overflow-hidden">
+                    <div id="probPosBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700 shadow-sm" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1 text-amber-400">
+                    <span>Neutral Probability</span>
+                    <span id="probNeuText" class="font-mono">0.0%</span>
+                  </div>
+                  <div class="h-2.5 rounded-full bg-slate-950 border border-slate-800/80 overflow-hidden">
+                    <div id="probNeuBar" class="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-700 shadow-sm" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1 text-rose-400">
+                    <span>Negative Probability</span>
+                    <span id="probNegText" class="font-mono">0.0%</span>
+                  </div>
+                  <div class="h-2.5 rounded-full bg-slate-950 border border-slate-800/80 overflow-hidden">
+                    <div id="probNegBar" class="h-full bg-gradient-to-r from-rose-500 to-red-500 rounded-full transition-all duration-700 shadow-sm" style="width: 0%"></div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <!-- Radial Confidence Gauge -->
-              <div class="flex items-center space-x-4">
-                <div class="text-right">
-                  <span class="text-xs text-slate-400 block">Model Confidence</span>
-                  <span id="confidenceNumber" class="text-2xl font-black text-white">99.8%</span>
+            <!-- Emotion & Action Dispatch Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <!-- Emotion & Tone Card -->
+              <div class="p-5 rounded-3xl glass-panel space-y-2">
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span><i class="fa-solid fa-masks-theater text-purple-400 mr-1.5"></i> Emotion & Tone</span>
+                  <span id="emotionConfidence" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-950 border border-purple-800 text-purple-300 font-bold">95%</span>
                 </div>
-                <div id="circularMeter" class="circular-progress glow-indigo">
-                  <span class="progress-value text-indigo-400 text-sm font-black" id="meterPercent">99%</span>
+                <div id="emotionPrimary" class="text-lg font-black text-white">Joy & Delight</div>
+                <p id="emotionTone" class="text-xs text-purple-300/80 italic font-medium">Enthusiastic & Delighted</p>
+              </div>
+
+              <!-- Ticket Dispatch Card -->
+              <div class="p-5 rounded-3xl glass-panel space-y-2">
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span><i class="fa-solid fa-ticket text-cyan-400 mr-1.5"></i> Ticket Dispatch</span>
+                  <span id="dispatchPriority" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-cyan-950 border border-cyan-800 text-cyan-300">P4 - Low</span>
                 </div>
+                <div id="dispatchDept" class="text-sm font-bold text-white truncate">Culinary Team</div>
+                <p id="dispatchAction" class="text-xs text-slate-400 leading-snug truncate">Share recognition with team.</p>
               </div>
 
             </div>
 
-            <!-- Probability Breakdown Bar -->
-            <div class="mt-6">
-              <div class="flex justify-between text-xs font-semibold text-slate-400 mb-1.5">
-                <span>Probability Breakdown:</span>
-                <span id="probLabels">Pos: 0% | Neu: 0% | Neg: 0%</span>
+            <!-- Fine-Grained Aspect Sentiment Breakdown -->
+            <div class="p-5 rounded-3xl glass-panel space-y-3">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span><i class="fa-solid fa-layer-group text-indigo-400 mr-1.5"></i> Aspect-Level Polarity Breakdown</span>
+                <span class="text-[10px] font-mono text-slate-500">Fine-Grained Signals</span>
               </div>
-              <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden flex">
-                <div id="barPos" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barNeu" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
-                <div id="barNeg" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
-              </div>
+              <div id="aspectBadgesContainer" class="flex flex-wrap gap-2"></div>
             </div>
 
-            <!-- Aspect Tags -->
-            <div class="mt-4 pt-4 border-t border-slate-800/80 flex items-center flex-wrap gap-2">
-              <span class="text-xs text-slate-400 font-semibold mr-1">Detected Aspects:</span>
-              <div id="aspectBadges" class="flex flex-wrap gap-1.5"></div>
+            <!-- Smart AI Response -->
+            <div class="p-5 rounded-3xl bg-indigo-950/25 border border-indigo-500/25 shadow-xl space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-300 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-robot text-indigo-400"></i>
+                  <span>Automated AI Business Reply</span>
+                </span>
+                <button onclick="copySmartReply()" class="text-xs font-semibold text-indigo-300 hover:text-white px-3 py-1 rounded-lg bg-indigo-900/40 hover:bg-indigo-900/80 border border-indigo-700/50 transition flex items-center">
+                  <i class="fa-regular fa-copy mr-1.5"></i> Copy Response
+                </button>
+              </div>
+              <p id="smartReplyText" class="text-xs sm:text-sm text-slate-200 leading-relaxed italic bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80 shadow-inner"></p>
             </div>
 
-          </div>
-
-          <!-- AI Smart Reply Assistant -->
-          <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-white flex items-center">
-                <i class="fa-solid fa-robot text-purple-400 mr-2"></i> AI-Generated Smart Reply
-              </h3>
-              <button onclick="copySmartReply()" class="px-3 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 text-xs font-semibold transition flex items-center space-x-1">
-                <i class="fa-solid fa-copy"></i>
-                <span id="copyBtnText">Copy Reply</span>
-              </button>
-            </div>
-            <textarea id="smartReplyText" rows="3" class="w-full bg-slate-900/90 border border-slate-700/60 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
-          </div>
-
-          <!-- Feature Engineering Drawer -->
-          <div class="glass-panel rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleFeatureDrawer()">
-              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center">
-                <i class="fa-solid fa-microchip text-cyan-400 mr-2"></i> Engineered NLP Features (6 Techniques)
-              </span>
-              <i id="drawerIcon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
-            </div>
-            <div id="featureDrawer" class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs pt-2">
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Characters</span>
-                <span id="fChar" class="font-bold text-white text-sm">--</span>
-              </div>
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Words</span>
-                <span id="fWord" class="font-bold text-white text-sm">--</span>
-              </div>
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Avg Word Length</span>
-                <span id="fAvgW" class="font-bold text-white text-sm">--</span>
-              </div>
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Exclamations (!)</span>
-                <span id="fExcl" class="font-bold text-white text-sm">--</span>
-              </div>
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Uppercase Ratio</span>
-                <span id="fUpper" class="font-bold text-white text-sm">--</span>
-              </div>
-              <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 block text-[10px]">Lexicon Polarity</span>
-                <span id="fPolarity" class="font-bold text-white text-sm">--</span>
-              </div>
-            </div>
           </div>
 
         </div>
 
       </div>
+    </section>
 
-    </div>
-
-    <!-- TAB 2: BATCH CSV & BULK ANALYTICS -->
-    <div id="tab-batch" class="tab-content hidden space-y-8">
-      
-      <!-- Upload Dropzone Card -->
-      <div class="glass-panel rounded-2xl p-8 text-center relative">
-        <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvUpload(event)" />
-        <div onclick="document.getElementById('csvFileInput').click()" class="cursor-pointer border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl p-8 transition group">
-          <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/10 group-hover:bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-3xl mb-4 transition">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-          </div>
-          <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Upload Customer Reviews (.CSV)</h3>
-          <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-            Drag and drop your review dataset or click to browse. Supports standard columns (`review_text`, `text`, `review`, `comment`).
-          </p>
-          <div class="mt-4 flex items-center justify-center space-x-3">
-            <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition">
-              Select CSV File
-            </button>
-            <button onclick="event.stopPropagation(); loadSampleCsvBatch()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-xs font-semibold transition">
-              Load Sample Batch
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div id="batchLoading" class="hidden glass-panel rounded-2xl p-10 text-center">
-        <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <h4 class="text-base font-bold text-white">Processing Review Dataset...</h4>
-        <p class="text-xs text-slate-400 mt-1">Applying 6-feature engineering pipeline and batch neural inference.</p>
-      </div>
-
-      <!-- Batch Analytics Dashboard (Hidden Until Uploaded) -->
-      <div id="batchDashboard" class="hidden space-y-8">
+    <!-- TAB 2: BATCH PROCESSING STUDIO -->
+    <section id="viewBatch" class="hidden space-y-6">
+      <div class="p-6 sm:p-8 rounded-3xl glass-panel shadow-2xl space-y-6">
         
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800/70">
+          <div>
+            <h2 class="text-xl font-black text-white tracking-tight">Batch Review Ingestion Studio</h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">Upload an Excel (`.xlsx, .xls`) or CSV (`.csv, .txt`) spreadsheet for bulk sentiment intelligence.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <input type="file" id="csvFileInput" accept=".csv, .txt, .xlsx, .xls" class="hidden" onchange="handleFileUpload(event)" />
+            <button id="importBtn" onclick="document.getElementById('csvFileInput').click()" class="px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 text-xs font-bold border border-slate-700 transition flex items-center space-x-2 shadow-md">
+              <i class="fa-solid fa-file-import text-indigo-400"></i>
+              <span>Import & Analyze File (.csv, .xlsx)</span>
+            </button>
+            <button onclick="runBatchAnalysis()" id="batchRunBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-lg shadow-indigo-500/20 transition flex items-center space-x-2">
+              <i class="fa-solid fa-play"></i>
+              <span>Process Text Lines</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-300 uppercase tracking-wider">Direct Multi-Line Input:</label>
+          <textarea id="batchInput" rows="4" class="w-full bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Paste reviews (one per line)..."></textarea>
+        </div>
+
         <!-- KPI Metrics Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div class="glass-panel p-4 rounded-xl">
-            <span class="text-xs font-semibold text-slate-400 block">Total Reviews</span>
-            <span id="kpiTotal" class="text-2xl font-black text-white mt-1 block">0</span>
+        <div id="batchStatsCard" class="hidden grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center shadow-inner">
+            <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Processed</div>
+            <div id="bStatTotal" class="text-2xl font-black text-white mt-1">0</div>
           </div>
-          <div class="glass-panel p-4 rounded-xl border-t-2 border-emerald-500">
-            <span class="text-xs font-semibold text-emerald-400 block">Positive</span>
-            <span id="kpiPos" class="text-2xl font-black text-emerald-400 mt-1 block">0%</span>
+          <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center shadow-inner">
+            <div class="text-xs text-emerald-400 font-bold uppercase tracking-wider">Positive Rate</div>
+            <div id="bStatPos" class="text-2xl font-black text-emerald-400 mt-1">0%</div>
           </div>
-          <div class="glass-panel p-4 rounded-xl border-t-2 border-amber-500">
-            <span class="text-xs font-semibold text-amber-400 block">Neutral</span>
-            <span id="kpiNeu" class="text-2xl font-black text-amber-400 mt-1 block">0%</span>
+          <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center shadow-inner">
+            <div class="text-xs text-amber-400 font-bold uppercase tracking-wider">CSAT Score</div>
+            <div id="bStatCsat" class="text-2xl font-black text-amber-400 mt-1">0.0%</div>
           </div>
-          <div class="glass-panel p-4 rounded-xl border-t-2 border-rose-500">
-            <span class="text-xs font-semibold text-rose-400 block">Negative</span>
-            <span id="kpiNeg" class="text-2xl font-black text-rose-400 mt-1 block">0%</span>
-          </div>
-          <div class="glass-panel p-4 rounded-xl border-t-2 border-red-600">
-            <span class="text-xs font-semibold text-red-400 block">Critical Alerts</span>
-            <span id="kpiCritical" class="text-2xl font-black text-red-400 mt-1 block">0</span>
-          </div>
-          <div class="glass-panel p-4 rounded-xl border-t-2 border-indigo-500">
-            <span class="text-xs font-semibold text-indigo-400 block">Avg Confidence</span>
-            <span id="kpiAvgConf" class="text-2xl font-black text-indigo-300 mt-1 block">0%</span>
+          <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 text-center shadow-inner">
+            <div class="text-xs text-indigo-400 font-bold uppercase tracking-wider">NPS Index</div>
+            <div id="bStatNps" class="text-2xl font-black text-indigo-400 mt-1">+0</div>
           </div>
         </div>
 
-        <!-- Charts Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <!-- Donut Chart (5 cols) -->
-          <div class="lg:col-span-5 glass-panel rounded-2xl p-6">
-            <h3 class="text-sm font-bold text-white mb-4 flex items-center">
-              <i class="fa-solid fa-chart-pie text-indigo-400 mr-2"></i> Sentiment Ratio Breakdown
-            </h3>
-            <div class="relative h-64 flex items-center justify-center">
-              <canvas id="sentimentChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Aspects Bar Chart (7 cols) -->
-          <div class="lg:col-span-7 glass-panel rounded-2xl p-6">
-            <h3 class="text-sm font-bold text-white mb-4 flex items-center">
-              <i class="fa-solid fa-chart-simple text-purple-400 mr-2"></i> Top Discussion Aspects & Drivers
-            </h3>
-            <div class="relative h-64">
-              <canvas id="aspectsChart"></canvas>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Data Table Card -->
-        <div class="glass-panel rounded-2xl p-6">
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-            <h3 class="text-sm font-bold text-white flex items-center">
-              <i class="fa-solid fa-table-list text-cyan-400 mr-2"></i> Processed Reviews Explorer
-            </h3>
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
-              <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="Search review keywords..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full sm:w-64" />
-              <button onclick="exportResultsToCsv()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs font-semibold whitespace-nowrap transition">
-                <i class="fa-solid fa-download mr-1"></i> Export
-              </button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto max-h-96">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="text-[11px] uppercase bg-slate-900/90 text-slate-400 sticky top-0 border-b border-slate-800">
-                <tr>
-                  <th class="py-3 px-4">#</th>
-                  <th class="py-3 px-4">Review Text</th>
-                  <th class="py-3 px-4">Sentiment</th>
-                  <th class="py-3 px-4">Confidence</th>
-                  <th class="py-3 px-4">Aspects</th>
-                  <th class="py-3 px-4">Action</th>
-                </tr>
-              </thead>
-              <tbody id="batchTableBody" class="divide-y divide-slate-800/60">
-                <!-- Dynamically populated table rows -->
-              </tbody>
-            </table>
-          </div>
+        <!-- Batch Table -->
+        <div class="overflow-x-auto rounded-2xl border border-slate-800/80 bg-slate-950/50 shadow-inner">
+          <table class="min-w-full divide-y divide-slate-800 text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase font-bold tracking-wider">
+              <tr>
+                <th class="py-3.5 px-4">#</th>
+                <th class="py-3.5 px-4">Sentiment</th>
+                <th class="py-3.5 px-4">Confidence</th>
+                <th class="py-3.5 px-4">Aspects</th>
+                <th class="py-3.5 px-4">Urgency</th>
+                <th class="py-3.5 px-4">Review Preview</th>
+              </tr>
+            </thead>
+            <tbody id="batchTableBody" class="divide-y divide-slate-800/60 font-medium">
+              <tr>
+                <td colspan="6" class="py-8 text-center text-slate-500">No batch processed yet. Import a file or paste lines above.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
       </div>
+    </section>
 
-    </div>
-
-    <!-- TAB 3: MODEL & FEATURE SPECS -->
-    <div id="tab-model" class="tab-content hidden space-y-8">
+    <!-- TAB 3: EXECUTIVE CSAT & ANALYTICS -->
+    <section id="viewAnalytics" class="hidden space-y-6">
       
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- Model Architecture Card (6 cols) -->
-        <div class="lg:col-span-6 glass-panel rounded-2xl p-6">
-          <h3 class="text-base font-bold text-white mb-4 flex items-center">
-            <i class="fa-solid fa-diagram-project text-indigo-400 mr-2"></i> Model Architecture & Benchmark
-          </h3>
-          <div class="space-y-3 text-xs text-slate-300">
-            <div class="flex justify-between py-2 border-b border-slate-800">
-              <span class="text-slate-400">Model Algorithm:</span>
-              <span class="font-bold text-white">Multinomial Logistic Regression (3-Class)</span>
-            </div>
-            <div class="flex justify-between py-2 border-b border-slate-800">
-              <span class="text-slate-400">Classes:</span>
-              <span class="font-bold text-emerald-400">Negative (0), Neutral (1), Positive (2)</span>
-            </div>
-            <div class="flex justify-between py-2 border-b border-slate-800">
-              <span class="text-slate-400">Total Training Records:</span>
-              <span class="font-bold text-white">100,000 Multi-Domain Reviews</span>
-            </div>
-            <div class="flex justify-between py-2 border-b border-slate-800">
-              <span class="text-slate-400">Total Engineered Features:</span>
-              <span class="font-bold text-cyan-400">2,792 Sparse & Dense Dimensions</span>
-            </div>
-            <div class="flex justify-between py-2 border-b border-slate-800">
-              <span class="text-slate-400">Cross Validation:</span>
-              <span class="font-bold text-indigo-400">5-Fold Stratified CV (F1 = 1.000)</span>
-            </div>
-          </div>
+        <div class="p-6 rounded-3xl glass-panel text-center space-y-2 shadow-2xl">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Customer Satisfaction (CSAT)</div>
+          <div id="analyticsCsat" class="text-4xl font-black text-emerald-400 tracking-tight">100.0%</div>
+          <div id="analyticsGrade" class="text-xs font-bold text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-full inline-block border border-emerald-800/80">Grade: A+</div>
         </div>
 
-        <!-- 6 Mandatory Features Card (6 cols) -->
-        <div class="lg:col-span-6 glass-panel rounded-2xl p-6">
-          <h3 class="text-base font-bold text-white mb-4 flex items-center">
-            <i class="fa-solid fa-list-check text-purple-400 mr-2"></i> 6 Mandatory Feature Techniques
-          </h3>
-          <div class="space-y-2.5 text-xs">
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">1</span>
-              <div><strong class="text-slate-200">Text Preprocessing & Normalization:</strong> Regex, lowercasing, character stripping.</div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">2</span>
-              <div><strong class="text-slate-200">Text Length & Metadata Features:</strong> Character count, word count, average word length.</div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">3</span>
-              <div><strong class="text-slate-200">Emotional & Punctuation Signals:</strong> Exclamation marks (!), uppercase ratio.</div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">4</span>
-              <div><strong class="text-slate-200">Lexicon Sentiment Polarity Score:</strong> Domain-agnostic sentiment index.</div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">5</span>
-              <div><strong class="text-slate-200">Feature Scaling & Normalization:</strong> StandardScaler on numerical dimensions.</div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex items-start space-x-2">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px]">6</span>
-              <div><strong class="text-slate-200">TF-IDF N-Grams (1,2) Fusion:</strong> Sparse-dense matrix fusion via hstack.</div>
-            </div>
-          </div>
+        <div class="p-6 rounded-3xl glass-panel text-center space-y-2 shadow-2xl">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Net Promoter Score (NPS)</div>
+          <div id="analyticsNps" class="text-4xl font-black text-indigo-400 tracking-tight">+100</div>
+          <div class="text-xs text-slate-400">Promoters vs Detractors Index</div>
+        </div>
+
+        <div class="p-6 rounded-3xl glass-panel text-center space-y-2 shadow-2xl">
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Feedback Processed</div>
+          <div id="analyticsTotal" class="text-4xl font-black text-white tracking-tight">0</div>
+          <div class="text-xs text-slate-400">Persistent SQLite Store</div>
         </div>
 
       </div>
 
-    </div>
+      <!-- Charts & Pain Points -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl glass-panel space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Sentiment Distribution Breakdown</h3>
+            <span class="text-xs text-slate-400 font-mono">Live Doughnut</span>
+          </div>
+          <div class="h-64 flex items-center justify-center relative">
+            <canvas id="sentimentChartCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 p-6 sm:p-8 rounded-3xl glass-panel space-y-4 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Top Aspect Pain-Point Risks</h3>
+            <span class="text-xs text-slate-400 font-mono">Risk Rank</span>
+          </div>
+          <div id="painPointsContainer" class="space-y-3">
+            <div class="text-xs text-slate-500 italic py-6 text-center">No complaints recorded yet.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: AUDIT HISTORY LOG -->
+    <section id="viewHistory" class="hidden space-y-6">
+      <div class="p-6 sm:p-8 rounded-3xl glass-panel shadow-2xl space-y-5">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800/70">
+          <div>
+            <h2 class="text-xl font-black text-white tracking-tight">Real-Time Audit Trail & Storage</h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">Searchable SQLite historical record of all customer review predictions.</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <button onclick="exportHistoryCsv()" class="px-4 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 text-xs font-bold border border-slate-700 transition flex items-center shadow-md">
+              <i class="fa-solid fa-download mr-1.5 text-indigo-400"></i> Export CSV
+            </button>
+            <button onclick="clearHistoryLog()" class="px-4 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 text-rose-200 text-xs font-bold border border-rose-800 transition flex items-center shadow-md">
+              <i class="fa-solid fa-trash mr-1.5"></i> Clear Log
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-800/80 bg-slate-950/50 shadow-inner">
+          <table class="min-w-full divide-y divide-slate-800 text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase font-bold tracking-wider">
+              <tr>
+                <th class="py-3.5 px-4">ID</th>
+                <th class="py-3.5 px-4">Timestamp</th>
+                <th class="py-3.5 px-4">Sentiment</th>
+                <th class="py-3.5 px-4">Confidence</th>
+                <th class="py-3.5 px-4">Aspects</th>
+                <th class="py-3.5 px-4">Emotion</th>
+                <th class="py-3.5 px-4">Review Text</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody" class="divide-y divide-slate-800/60 font-medium">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-500">Loading history logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
 
   </main>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-5 right-5 glass-panel px-4 py-3 rounded-xl border border-indigo-500/50 shadow-2xl text-xs font-bold text-white transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-2 z-50">
-    <i class="fa-solid fa-circle-check text-emerald-400"></i>
-    <span id="toastMsg">Notification</span>
-  </div>
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer"></div>
 
-  <!-- APPLICATION JAVASCRIPT -->
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-900 bg-slate-950/60 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>OmniReview AI &copy; 2026. Built with FastAPI & scikit-learn.</div>
+      <div class="font-mono text-[11px] text-slate-600">30,006 Dimensions | 100K Balanced Multi-Domain Corpus</div>
+    </div>
+  </footer>
+
+  <!-- Custom App Script -->
   <script src="/static/app.js"></script>
 </body>
 </html>

@@ -1,328 +1,273 @@
-/**
- * OmniReview AI - Frontend Dashboard Application Logic
- */
+// OmniReview AI - Modern Frontend State & Interactive Controller
 
-// Global State
-let sentimentChartInstance = null;
-let aspectsChartInstance = null;
-let currentBatchData = [];
+let sentimentChart = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  initHealthCheck();
-  loadSampleButtons();
-});
-
-// 1. HEALTH CHECK & STATUS
-async function initHealthCheck() {
-  const statusBadge = document.getElementById("statusBadge");
-  const statusText = document.getElementById("statusText");
-
-  try {
-    const res = await fetch("/api/health");
-    if (res.ok) {
-      const data = await res.json();
-      statusBadge.className = "flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-xs font-medium text-emerald-400";
-      statusText.textContent = `API Active (${data.model_name || '3-Class ML'})`;
-    } else {
-      throw new Error("API error");
-    }
-  } catch (err) {
-    statusBadge.className = "flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-950/40 border border-rose-500/30 text-xs font-medium text-rose-400";
-    statusText.textContent = "Offline";
-  }
+// Global Toast Manager
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const icon = type === 'success' ? '<i class="fa-solid fa-circle-check text-emerald-400"></i>' :
+               type === 'error' ? '<i class="fa-solid fa-circle-xmark text-rose-400"></i>' :
+               '<i class="fa-solid fa-circle-info text-indigo-400"></i>';
+  toast.className = 'toast';
+  toast.innerHTML = `${icon} <span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
-// 2. TAB SWITCHING
+// Tab Switching with Animation
 function switchTab(tabId) {
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-  document.querySelectorAll(".tab-btn").forEach(el => {
-    el.classList.remove("active", "border-indigo-500", "text-indigo-400");
-    el.classList.add("border-transparent", "text-slate-400");
+  const tabs = ['single', 'batch', 'analytics', 'history'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    const view = document.getElementById(`view${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    if (t === tabId) {
+      btn.className = "flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md shadow-indigo-500/20 flex items-center justify-center space-x-2 transition whitespace-nowrap";
+      view.classList.remove('hidden');
+    } else {
+      btn.className = "flex-1 py-2.5 px-4 rounded-xl font-medium text-xs sm:text-sm text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 flex items-center justify-center space-x-2 transition whitespace-nowrap";
+      view.classList.add('hidden');
+    }
   });
 
-  const activeTab = document.getElementById(tabId);
-  const activeBtn = document.getElementById(`btn-${tabId}`);
-  if (activeTab) activeTab.classList.remove("hidden");
-  if (activeBtn) {
-    activeBtn.classList.add("active", "border-indigo-500", "text-indigo-400");
-    activeBtn.classList.remove("border-transparent", "text-slate-400");
-  }
+  if (tabId === 'analytics') loadAnalytics();
+  if (tabId === 'history') loadHistory();
 }
 
-// 3. LOAD QUICK TEST SAMPLES
-async function loadSampleButtons() {
-  const container = document.getElementById("samplePills");
-  if (!container) return;
-
-  try {
-    const res = await fetch("/api/sample-reviews");
-    if (res.ok) {
-      const samples = await res.json();
-      container.innerHTML = "";
-      samples.forEach((s, idx) => {
-        const btn = document.createElement("button");
-        let badgeColor = "border-slate-700 bg-slate-800 text-slate-300 hover:border-indigo-500";
-        if (s.expected === "Positive") badgeColor = "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20";
-        if (s.expected === "Negative") badgeColor = "border-rose-500/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20";
-        if (s.expected === "Neutral") badgeColor = "border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20";
-
-        btn.className = `px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition ${badgeColor}`;
-        btn.textContent = `${s.expected} (${s.category || s.domain.split(' ')[0]})`;
-        btn.onclick = () => {
-          document.getElementById("reviewInput").value = s.text;
-          document.getElementById("domainSelect").value = s.domain;
-          analyzeReview();
-        };
-        container.appendChild(btn);
-      });
-    }
-  } catch (err) {
-    console.warn("Could not load sample reviews:", err);
-  }
-}
-
-function clearInput() {
-  document.getElementById("reviewInput").value = "";
-  document.getElementById("resultCard").classList.add("hidden");
-  document.getElementById("emptyResult").classList.remove("hidden");
-}
-
-// 4. ANALYZE SINGLE REVIEW
-async function analyzeReview() {
-  const text = document.getElementById("reviewInput").value.trim();
-  const domain = document.getElementById("domainSelect").value;
-  const analyzeBtn = document.getElementById("analyzeBtn");
-
+// Single Review Sentiment Analysis
+async function analyzeSingleReview() {
+  const text = document.getElementById('reviewInput').value.trim();
   if (!text) {
-    showToast("Please enter or paste a review first!", "error");
+    showToast("Please enter a customer review to analyze.", "error");
     return;
   }
 
-  analyzeBtn.disabled = true;
-  analyzeBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Analyzing...</span>`;
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Analyzing...`;
 
   try {
-    const res = await fetch("/api/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ review_text: text, domain: domain })
+    const response = await fetch('/api/v1/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
     });
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || "Prediction failed");
+    if (!response.ok) {
+      throw new Error(`Inference Error: ${response.statusText}`);
     }
 
-    const data = await res.json();
+    const data = await response.json();
     renderSingleResult(data);
+    showToast("Sentiment analysis complete!", "success");
   } catch (err) {
     showToast(err.message, "error");
   } finally {
-    analyzeBtn.disabled = false;
-    analyzeBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Analyze Review</span>`;
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles mr-2"></i> <span>Analyze Sentiment</span>`;
   }
 }
 
 function renderSingleResult(data) {
-  document.getElementById("emptyResult").classList.add("hidden");
-  const resultCard = document.getElementById("resultCard");
-  resultCard.classList.remove("hidden");
+  document.getElementById('resultPlaceholder').classList.add('hidden');
+  document.getElementById('resultCard').classList.remove('hidden');
 
-  // Sentiment Badge
-  const badge = document.getElementById("sentimentBadge");
-  const bannerBorder = document.getElementById("bannerBorder");
-  const meter = document.getElementById("circularMeter");
+  // Sentiment Banner Styling
+  const banner = document.getElementById('sentimentBanner');
+  const label = document.getElementById('sentimentLabel');
+  const icon = document.getElementById('sentimentIcon');
+  const iconCont = document.getElementById('sentimentIconContainer');
 
-  if (data.sentiment === "Positive") {
-    badge.className = "px-4 py-1.5 rounded-xl text-sm font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 glow-emerald flex items-center space-x-2";
-    badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>POSITIVE</span>`;
-    bannerBorder.className = "glass-panel rounded-2xl p-6 border-l-4 border-l-emerald-500";
-    meter.style.background = `conic-gradient(#10b981 ${data.confidence * 360}deg, #1f2937 0deg)`;
-  } else if (data.sentiment === "Neutral") {
-    badge.className = "px-4 py-1.5 rounded-xl text-sm font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/40 glow-amber flex items-center space-x-2";
-    badge.innerHTML = `<i class="fa-solid fa-circle-dot"></i> <span>NEUTRAL</span>`;
-    bannerBorder.className = "glass-panel rounded-2xl p-6 border-l-4 border-l-amber-500";
-    meter.style.background = `conic-gradient(#f59e0b ${data.confidence * 360}deg, #1f2937 0deg)`;
+  label.innerText = data.sentiment;
+  document.getElementById('confidenceBadge').innerText = `${(data.confidence * 100).toFixed(1)}% Confidence`;
+
+  if (data.sentiment === 'Positive') {
+    banner.className = "p-6 rounded-3xl border bg-emerald-950/40 border-emerald-500/40 text-emerald-300 shadow-xl flex items-center justify-between";
+    icon.className = "fa-solid fa-face-smile text-emerald-400";
+    iconCont.className = "w-14 h-14 rounded-2xl bg-emerald-900/60 border border-emerald-500/50 flex items-center justify-center text-3xl text-emerald-300 shadow-lg shadow-emerald-900/40";
+  } else if (data.sentiment === 'Neutral') {
+    banner.className = "p-6 rounded-3xl border bg-amber-950/40 border-amber-500/40 text-amber-300 shadow-xl flex items-center justify-between";
+    icon.className = "fa-solid fa-face-meh text-amber-400";
+    iconCont.className = "w-14 h-14 rounded-2xl bg-amber-900/60 border border-amber-500/50 flex items-center justify-center text-3xl text-amber-300 shadow-lg shadow-amber-900/40";
   } else {
-    badge.className = "px-4 py-1.5 rounded-xl text-sm font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/40 glow-rose flex items-center space-x-2";
-    badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>NEGATIVE</span>`;
-    bannerBorder.className = "glass-panel rounded-2xl p-6 border-l-4 border-l-rose-500";
-    meter.style.background = `conic-gradient(#f43f5e ${data.confidence * 360}deg, #1f2937 0deg)`;
+    banner.className = "p-6 rounded-3xl border bg-rose-950/40 border-rose-500/40 text-rose-300 shadow-xl flex items-center justify-between";
+    icon.className = "fa-solid fa-face-frown text-rose-400";
+    iconCont.className = "w-14 h-14 rounded-2xl bg-rose-900/60 border border-rose-500/50 flex items-center justify-center text-3xl text-rose-300 shadow-lg shadow-rose-900/40";
   }
 
-  // Urgency
-  const urgency = document.getElementById("urgencyBadge");
-  if (data.urgency_level === "Critical") {
-    urgency.className = "px-3 py-1 rounded-lg text-xs font-bold bg-red-600/30 text-red-300 border border-red-500 pulse-critical";
-    urgency.innerHTML = `<i class="fa-solid fa-bell mr-1"></i> Critical Alert`;
-  } else if (data.urgency_level === "High") {
-    urgency.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40";
-    urgency.innerHTML = `High Priority`;
-  } else {
-    urgency.className = "px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-400";
-    urgency.innerHTML = `Urgency: ${data.urgency_level}`;
-  }
+  // Probability Bars
+  const pPos = (data.probabilities.Positive * 100).toFixed(1);
+  const pNeu = (data.probabilities.Neutral * 100).toFixed(1);
+  const pNeg = (data.probabilities.Negative * 100).toFixed(1);
 
-  // Confidence
-  const confPct = Math.round(data.confidence * 100);
-  document.getElementById("confidenceNumber").textContent = `${confPct}%`;
-  document.getElementById("meterPercent").textContent = `${confPct}%`;
+  document.getElementById('probPosText').innerText = `${pPos}%`;
+  document.getElementById('probNeuText').innerText = `${pNeu}%`;
+  document.getElementById('probNegText').innerText = `${pNeg}%`;
 
-  // Probabilities Bar
-  const pPos = Math.round((data.probabilities.Positive || 0) * 100);
-  const pNeu = Math.round((data.probabilities.Neutral || 0) * 100);
-  const pNeg = Math.round((data.probabilities.Negative || 0) * 100);
+  document.getElementById('probPosBar').style.width = `${pPos}%`;
+  document.getElementById('probNeuBar').style.width = `${pNeu}%`;
+  document.getElementById('probNegBar').style.width = `${pNeg}%`;
 
-  document.getElementById("barPos").style.width = `${pPos}%`;
-  document.getElementById("barNeu").style.width = `${pNeu}%`;
-  document.getElementById("barNeg").style.width = `${pNeg}%`;
-  document.getElementById("probLabels").textContent = `Pos: ${pPos}% | Neu: ${pNeu}% | Neg: ${pNeg}%`;
+  // Emotion & Tone
+  document.getElementById('emotionPrimary').innerText = data.emotion.primary_emotion;
+  document.getElementById('emotionConfidence').innerText = `${(data.emotion.confidence * 100).toFixed(0)}%`;
+  document.getElementById('emotionTone').innerText = data.emotion.tone_tag;
 
-  // Aspects
-  const aspectContainer = document.getElementById("aspectBadges");
-  aspectContainer.innerHTML = "";
-  data.aspects.forEach(asp => {
-    const aspSpan = document.createElement("span");
-    aspSpan.className = "px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20";
-    aspSpan.textContent = asp;
-    aspectContainer.appendChild(aspSpan);
+  // Dispatch & Ticket
+  document.getElementById('dispatchPriority').innerText = data.action_recommendation.priority_level;
+  document.getElementById('dispatchDept').innerText = data.action_recommendation.assigned_department;
+  document.getElementById('dispatchAction').innerText = data.action_recommendation.recommended_action;
+
+  // Aspect Badges
+  const badgeCont = document.getElementById('aspectBadgesContainer');
+  badgeCont.innerHTML = '';
+  data.aspect_breakdown.forEach(ab => {
+    const span = document.createElement('span');
+    const color = ab.sentiment === 'Positive' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80' :
+                  ab.sentiment === 'Negative' ? 'bg-rose-950/80 text-rose-300 border-rose-700/80' :
+                  'bg-slate-900 text-slate-300 border-slate-700';
+    span.className = `px-3 py-1.5 rounded-xl text-xs font-semibold border ${color} flex items-center space-x-2 shadow-sm`;
+    span.innerHTML = `<span>${ab.aspect}</span> <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/40">(${ab.polarity_score > 0 ? '+' : ''}${ab.polarity_score.toFixed(2)})</span>`;
+    badgeCont.appendChild(span);
   });
 
   // Smart Reply
-  document.getElementById("smartReplyText").value = data.smart_reply || "";
+  document.getElementById('smartReplyText').innerText = data.smart_reply;
+}
 
-  // Feature Engineering Drawer
-  if (data.engineered_features) {
-    document.getElementById("fChar").textContent = data.engineered_features.char_count;
-    document.getElementById("fWord").textContent = data.engineered_features.word_count;
-    document.getElementById("fAvgW").textContent = data.engineered_features.avg_word_length;
-    document.getElementById("fExcl").textContent = data.engineered_features.exclamation_count;
-    document.getElementById("fUpper").textContent = `${Math.round(data.engineered_features.uppercase_ratio * 100)}%`;
-    document.getElementById("fPolarity").textContent = data.engineered_features.lexicon_polarity;
+// Batch Processing
+async function runBatchAnalysis() {
+  const text = document.getElementById('batchInput').value.trim();
+  if (!text) {
+    showToast("Please enter at least one review per line.", "error");
+    return;
   }
-}
 
-function toggleFeatureDrawer() {
-  const drawer = document.getElementById("featureDrawer");
-  const icon = document.getElementById("drawerIcon");
-  drawer.classList.toggle("hidden");
-  icon.classList.toggle("fa-chevron-up");
-  icon.classList.toggle("fa-chevron-down");
-}
-
-function copySmartReply() {
-  const replyInput = document.getElementById("smartReplyText");
-  replyInput.select();
-  navigator.clipboard.writeText(replyInput.value);
-  
-  const copyBtn = document.getElementById("copyBtnText");
-  copyBtn.textContent = "Copied!";
-  setTimeout(() => { copyBtn.textContent = "Copy Reply"; }, 2000);
-  showToast("Smart reply copied to clipboard!", "success");
-}
-
-// 5. BATCH CSV UPLOAD & DASHBOARD
-async function handleCsvUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const formData = new FormData();
-  formData.append("file", file);
-
-  showBatchLoading(true);
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+  const btn = document.getElementById('batchRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Processing...`;
 
   try {
-    const res = await fetch("/api/upload-csv", {
-      method: "POST",
-      body: formData
+    const response = await fetch('/api/v1/predict-batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reviews: lines })
     });
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || "CSV upload failed");
-    }
-
-    const data = await res.json();
+    const data = await response.json();
     renderBatchResults(data);
-    showToast(`Successfully analyzed ${data.summary.total_reviews} reviews!`, "success");
+    showToast(`Successfully analyzed ${data.total_processed} reviews!`, "success");
   } catch (err) {
-    showToast(err.message, "error");
+    showToast(`Batch error: ${err.message}`, "error");
   } finally {
-    showBatchLoading(false);
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-play mr-1.5"></i> Process Text Lines`;
   }
-}
-
-function loadSampleCsvBatch() {
-  showBatchLoading(true);
-  setTimeout(async () => {
-    try {
-      const sampleReviews = [
-        "Consistently the top spot in town for truffle pasta. Spotless cleanliness and exceptional staff!",
-        "Horrible dining experience with the burger. The freezing cold food is unacceptable. Left hungry.",
-        "An ordinary experience regarding the product. It features acceptable quality and routine service.",
-        "Best tech purchase of the year! Incredible battery life, crystal clear display, and fast charging.",
-        "Do not buy this! Constant hardware failure and Bluetooth disconnects. Died after two weeks.",
-        "The wool cardigan is soft, elegant, and fits like a dream. Top notch craftsmanship.",
-        "Cheap fabric, buttons fell off immediately, and the zipper is completely jammed. Terrible.",
-        "Average repair service on our plumbing. Finished on time without major issue."
-      ];
-
-      const res = await fetch("/api/predict-batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reviews: sampleReviews })
-      });
-
-      if (!res.ok) throw new Error("Batch inference failed");
-      const data = await res.json();
-      renderBatchResults(data);
-      showToast("Loaded sample batch successfully!", "success");
-    } catch (err) {
-      showToast(err.message, "error");
-    } finally {
-      showBatchLoading(false);
-    }
-  }, 600);
-}
-
-function showBatchLoading(isLoading) {
-  document.getElementById("batchLoading").classList.toggle("hidden", !isLoading);
-  if (isLoading) document.getElementById("batchDashboard").classList.add("hidden");
 }
 
 function renderBatchResults(data) {
-  currentBatchData = data.results || [];
-  const s = data.summary;
+  document.getElementById('batchStatsCard').classList.remove('hidden');
+  document.getElementById('bStatTotal').innerText = data.total_processed;
+  document.getElementById('bStatPos').innerText = `${data.summary_stats.positive_percentage}%`;
+  document.getElementById('bStatCsat').innerText = `${data.summary_stats.csat_score}%`;
+  document.getElementById('bStatNps').innerText = `${data.summary_stats.nps_estimate > 0 ? '+' : ''}${data.summary_stats.nps_estimate}`;
 
-  document.getElementById("batchDashboard").classList.remove("hidden");
-
-  // Update KPIs
-  document.getElementById("kpiTotal").textContent = s.total_reviews.toLocaleString();
-  document.getElementById("kpiPos").textContent = `${s.positive_percentage}%`;
-  document.getElementById("kpiNeu").textContent = `${s.neutral_percentage}%`;
-  document.getElementById("kpiNeg").textContent = `${s.negative_percentage}%`;
-  document.getElementById("kpiCritical").textContent = s.critical_alerts_count;
-  document.getElementById("kpiAvgConf").textContent = `${s.average_confidence}%`;
-
-  // Render Charts
-  renderSentimentChart(s.positive_count, s.neutral_count, s.negative_count);
-  renderAspectsChart(s.top_aspects || {});
-
-  // Populate Table
-  renderBatchTable(currentBatchData);
+  const tbody = document.getElementById('batchTableBody');
+  tbody.innerHTML = '';
+  data.results.forEach(r => {
+    const tr = document.createElement('tr');
+    const badgeColor = r.sentiment === 'Positive' ? 'text-emerald-400 bg-emerald-950/80 border-emerald-800' :
+                       r.sentiment === 'Negative' ? 'text-rose-400 bg-rose-950/80 border-rose-800' :
+                       'text-amber-400 bg-amber-950/80 border-amber-800';
+    tr.innerHTML = `
+      <td class="py-3.5 px-4 font-mono font-bold text-slate-400">${r.index}</td>
+      <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-[11px] font-bold border ${badgeColor}">${r.sentiment}</span></td>
+      <td class="py-3.5 px-4 font-mono font-bold">${(r.confidence * 100).toFixed(1)}%</td>
+      <td class="py-3.5 px-4 text-slate-400">${r.aspects.join(', ')}</td>
+      <td class="py-3.5 px-4"><span class="text-xs font-bold ${r.urgency_level === 'Critical' ? 'text-red-400 font-extrabold' : 'text-slate-400'}">${r.urgency_level}</span></td>
+      <td class="py-3.5 px-4 text-slate-300 truncate max-w-xs" title="${r.review_text}">${r.review_text}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-function renderSentimentChart(pos, neu, neg) {
-  const ctx = document.getElementById("sentimentChart").getContext("2d");
-  if (sentimentChartInstance) sentimentChartInstance.destroy();
+// Excel & CSV File Upload with Active Loading State
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-  sentimentChartInstance = new Chart(ctx, {
-    type: "doughnut",
+  const importBtn = document.getElementById('importBtn');
+  
+  if (importBtn) {
+    importBtn.disabled = true;
+    importBtn.classList.add('opacity-80', 'cursor-not-allowed', 'ring-2', 'ring-indigo-500');
+    importBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-indigo-400 mr-2"></i> <span class="text-indigo-300 font-bold">Importing & Analyzing...</span>`;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/v1/upload-csv', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.detail || `Upload failed (${response.statusText})`);
+    }
+    
+    const data = await response.json();
+    renderBatchResults(data);
+    showToast(`Imported and analyzed ${data.total_processed} reviews from file!`, "success");
+  } catch (err) {
+    showToast(`File Import Error: ${err.message}`, "error");
+  } finally {
+    if (importBtn) {
+      importBtn.disabled = false;
+      importBtn.classList.remove('opacity-80', 'cursor-not-allowed', 'ring-2', 'ring-indigo-500');
+      importBtn.innerHTML = `<i class="fa-solid fa-file-import text-indigo-400 mr-2"></i> <span>Import & Analyze File (.csv, .xlsx)</span>`;
+    }
+    event.target.value = '';
+  }
+}
+
+// Executive Analytics
+async function loadAnalytics() {
+  try {
+    const response = await fetch('/api/v1/analytics/summary');
+    const data = await response.json();
+
+    document.getElementById('analyticsCsat').innerText = `${data.metrics.csat_score}%`;
+    document.getElementById('analyticsGrade').innerText = `Grade: ${data.metrics.satisfaction_grade}`;
+    document.getElementById('analyticsNps').innerText = `${data.metrics.nps_estimate > 0 ? '+' : ''}${data.metrics.nps_estimate}`;
+    document.getElementById('analyticsTotal').innerText = data.total_reviews_analyzed;
+
+    renderSentimentChart(data.metrics.sentiment_distribution);
+    renderPainPoints(data.pain_points);
+  } catch (err) {
+    console.error("Analytics fetch error:", err);
+  }
+}
+
+function renderSentimentChart(dist) {
+  const ctx = document.getElementById('sentimentChartCanvas').getContext('2d');
+  if (sentimentChart) sentimentChart.destroy();
+
+  sentimentChart = new Chart(ctx, {
+    type: 'doughnut',
     data: {
-      labels: ["Positive", "Neutral", "Negative"],
+      labels: ['Positive', 'Neutral', 'Negative'],
       datasets: [{
-        data: [pos, neu, neg],
-        backgroundColor: ["#10b981", "#f59e0b", "#f43f5e"],
+        data: [dist.Positive || 0, dist.Neutral || 0, dist.Negative || 0],
+        backgroundColor: ['#10b981', '#f59e0b', '#f43f5e'],
         borderWidth: 0,
         hoverOffset: 6
       }]
@@ -330,122 +275,119 @@ function renderSentimentChart(pos, neu, neg) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      cutout: '72%',
       plugins: {
         legend: {
-          position: "bottom",
-          labels: { color: "#94a3b8", font: { family: "Plus Jakarta Sans", size: 11 } }
+          position: 'bottom',
+          labels: { color: '#cbd5e1', font: { size: 12, weight: 'bold' }, padding: 16 }
         }
-      },
-      cutout: "70%"
-    }
-  });
-}
-
-function renderAspectsChart(aspectsMap) {
-  const ctx = document.getElementById("aspectsChart").getContext("2d");
-  if (aspectsChartInstance) aspectsChartInstance.destroy();
-
-  const labels = Object.keys(aspectsMap);
-  const values = Object.values(aspectsMap);
-
-  aspectsChartInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Review Mentions",
-        data: values,
-        backgroundColor: "#6366f1",
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        x: { ticks: { color: "#94a3b8" }, grid: { color: "#1e293b" } },
-        y: { ticks: { color: "#cbd5e1", font: { size: 11 } }, grid: { display: false } }
       }
     }
   });
 }
 
-function renderBatchTable(items) {
-  const tbody = document.getElementById("batchTableBody");
-  tbody.innerHTML = "";
+function renderPainPoints(points) {
+  const cont = document.getElementById('painPointsContainer');
+  cont.innerHTML = '';
+  if (!points || points.length === 0) {
+    cont.innerHTML = '<div class="text-xs text-slate-500 italic py-6 text-center">No pain-points detected yet.</div>';
+    return;
+  }
 
-  items.forEach((item, idx) => {
-    const tr = document.createElement("tr");
-    tr.className = "hover:bg-slate-900/60 transition";
-
-    let badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-    if (item.sentiment === "Negative") badgeClass = "bg-rose-500/10 text-rose-400 border border-rose-500/20";
-    if (item.sentiment === "Neutral") badgeClass = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
-
-    tr.innerHTML = `
-      <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
-      <td class="py-3 px-4 text-slate-200 max-w-xs truncate" title="${item.review_text}">${item.review_text}</td>
-      <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${item.sentiment}</span></td>
-      <td class="py-3 px-4 font-semibold text-slate-300">${Math.round(item.confidence * 100)}%</td>
-      <td class="py-3 px-4 text-slate-400">${item.aspects.join(", ")}</td>
-      <td class="py-3 px-4">
-        <button onclick="inspectRow(${idx})" class="text-indigo-400 hover:text-indigo-300 font-semibold text-xs">
-          Inspect
-        </button>
-      </td>
+  points.slice(0, 5).forEach(p => {
+    const div = document.createElement('div');
+    div.className = "p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 flex items-center justify-between shadow-inner";
+    div.innerHTML = `
+      <div>
+        <div class="text-xs font-bold text-slate-200">${p.aspect}</div>
+        <div class="text-[11px] text-slate-400 mt-0.5">${p.negative_mentions} complaints / ${p.total_mentions} mentions</div>
+      </div>
+      <span class="px-3 py-1 rounded-lg text-xs font-bold ${p.negative_rate > 30 ? 'bg-rose-950/80 text-rose-300 border border-rose-800' : 'bg-slate-900 text-slate-300 border border-slate-800'}">
+        ${p.negative_rate}% Risk
+      </span>
     `;
-    tbody.appendChild(tr);
+    cont.appendChild(div);
   });
 }
 
-function filterTable() {
-  const query = document.getElementById("tableSearch").value.toLowerCase();
-  const filtered = currentBatchData.filter(d => 
-    d.review_text.toLowerCase().includes(query) ||
-    d.sentiment.toLowerCase().includes(query) ||
-    d.aspects.some(a => a.toLowerCase().includes(query))
-  );
-  renderBatchTable(filtered);
+// Audit History Log
+async function loadHistory() {
+  try {
+    const response = await fetch('/api/v1/history/?limit=50');
+    const data = await response.json();
+    const tbody = document.getElementById('historyTableBody');
+    tbody.innerHTML = '';
+
+    if (!data.records || data.records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-500">No records found.</td></tr>';
+      return;
+    }
+
+    data.records.forEach(r => {
+      const tr = document.createElement('tr');
+      const badgeColor = r.sentiment === 'Positive' ? 'text-emerald-400 bg-emerald-950/80 border-emerald-800' :
+                         r.sentiment === 'Negative' ? 'text-rose-400 bg-rose-950/80 border-rose-800' :
+                         'text-amber-400 bg-amber-950/80 border-amber-800';
+      tr.innerHTML = `
+        <td class="py-3.5 px-4 font-mono font-bold text-slate-400">${r.id}</td>
+        <td class="py-3.5 px-4 text-slate-400 font-mono text-[11px]">${r.timestamp ? r.timestamp.slice(0, 19).replace('T', ' ') : '-'}</td>
+        <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md text-[11px] font-bold border ${badgeColor}">${r.sentiment}</span></td>
+        <td class="py-3.5 px-4 font-mono font-bold">${(r.confidence * 100).toFixed(1)}%</td>
+        <td class="py-3.5 px-4 text-slate-400">${r.aspects.join(', ')}</td>
+        <td class="py-3.5 px-4 text-purple-300 font-semibold">${r.emotion}</td>
+        <td class="py-3.5 px-4 text-slate-300 truncate max-w-xs" title="${r.review_text}">${r.review_text}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error("History fetch error:", err);
+  }
 }
 
-function inspectRow(idx) {
-  const item = currentBatchData[idx];
-  if (!item) return;
-  document.getElementById("reviewInput").value = item.review_text;
-  switchTab("tab-live");
-  renderSingleResult(item);
+function exportHistoryCsv() {
+  window.open('/api/v1/history/export', '_blank');
+  showToast("Downloading audit log CSV...", "info");
 }
 
-function exportResultsToCsv() {
-  if (!currentBatchData.length) return;
-  let csv = "Review Text,Sentiment,Confidence,Aspects,Smart Reply\n";
-  currentBatchData.forEach(r => {
-    csv += `"${r.review_text.replace(/"/g, '""')}","${r.sentiment}",${r.confidence},"${r.aspects.join('; ')}","${(r.smart_reply || '').replace(/"/g, '""')}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `sentiment_analysis_report_${new Date().toISOString().slice(0,10)}.csv`;
-  link.click();
-  showToast("CSV report exported successfully!", "success");
+async function clearHistoryLog() {
+  if (!confirm("Are you sure you want to clear the audit history log?")) return;
+  await fetch('/api/v1/history/clear', { method: 'DELETE' });
+  loadHistory();
+  showToast("Audit log cleared.", "info");
 }
 
-// 6. TOAST NOTIFICATIONS
-function showToast(msg, type = "success") {
-  const toast = document.getElementById("toast");
-  const toastMsg = document.getElementById("toastMsg");
-  toastMsg.textContent = msg;
-
-  toast.classList.remove("translate-y-20", "opacity-0");
-  toast.classList.add("translate-y-0", "opacity-100");
-
-  setTimeout(() => {
-    toast.classList.remove("translate-y-0", "opacity-100");
-    toast.classList.add("translate-y-20", "opacity-0");
-  }, 3000);
+// Preset Samples
+function loadSample(type) {
+  const textarea = document.getElementById('reviewInput');
+  if (type === 'pos') {
+    textarea.value = "I had a wonderful experience at this restaurant. The food was fresh, flavorful, and beautifully presented, and every dish we tried was delicious. The staff were friendly, attentive, and professional, making us feel very welcome throughout our visit. The atmosphere was comfortable, clean, and relaxing.";
+  } else if (type === 'neu') {
+    textarea.value = "The food was decent, and the service was acceptable. Nothing was particularly special, but it was an okay place for a casual meal.";
+  } else if (type === 'neg') {
+    textarea.value = "The food was disappointing, and the service was very slow. The staff were not friendly, and the overall experience was not worth the price.";
+  } else if (type === 'crit') {
+    textarea.value = "Severe food poisoning after eating the raw seafood platter! Had to visit the emergency clinic. Completely hazardous hygiene!";
+  }
+  updateCounters(textarea.value);
 }
+
+function clearSingleInput() {
+  document.getElementById('reviewInput').value = '';
+  updateCounters('');
+}
+
+function copySmartReply() {
+  const text = document.getElementById('smartReplyText').innerText;
+  navigator.clipboard.writeText(text);
+  showToast("Smart response copied to clipboard!", "success");
+}
+
+function updateCounters(val) {
+  const chars = val.length;
+  const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+  document.getElementById('charCounter').innerText = `${chars} chars | ${words} words`;
+}
+
+document.getElementById('reviewInput').addEventListener('input', (e) => {
+  updateCounters(e.target.value);
+});
